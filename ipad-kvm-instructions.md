@@ -17,7 +17,7 @@ Now boot up your pi, find its ip lease in your router, and connect to it via ssh
 
 Update everything as is normal with a fresh install.
 
-```
+```bash
 sudo apt update
 sudo apt upgrade -y
 ```
