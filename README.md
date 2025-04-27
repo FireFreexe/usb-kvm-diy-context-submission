@@ -30,7 +30,7 @@ It works wonderfully!
 
 ![PXL_20250427_193624842 MP](https://github.com/user-attachments/assets/7656cfd6-7aed-4fef-b127-ca6dbae319e0)
 
-Additionally, if you either have a vpn into your home network, or install a program like TeamViewer onto the Pi, you could remote into your server from anywhere with internet. I personally have a vpn to my home, so a lot of my servers I can ssh to while im on campus, but now I have the ability to get remote access to the bios of my main server! This server has enough issues that when it reboots, I usually need to change bios settings, and now I am able to play witht he bios setting when im not even at home, which was never a possibility before the mini-kvm.
+Additionally, if you either have a vpn into your home network, or install a program like TeamViewer onto the Pi, you could remote into your server from anywhere with internet. I personally have a vpn to my home, so a lot of my servers I can ssh to while im on campus, but now I have the ability to get remote access to the bios of my main server! This server has enough issues that when it reboots, I usually need to change bios settings, and now I am able to play with the bios setting when im not even at home, which was never a possibility before the mini-kvm.
 
 # Conclusion
 
