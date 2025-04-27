@@ -43,7 +43,7 @@ Comment out `otg_mode=1` from `/boot/firmware/config.txt`
 
 Now make the file `/usr/local/sbin/usb-gadget.sh` and put this in it:
 
-```
+```bash
 #!/bin/bash
 
 cd /sys/kernel/config/usb_gadget/
