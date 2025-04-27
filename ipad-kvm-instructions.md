@@ -24,13 +24,13 @@ sudo apt upgrade -y
 
 Then update the firmware to allow the gadget support.
 
-```
+```bash
 sudo rpi-update
 ```
 
 After is updates, reboot.
 
-```
+```bash
 sudo reboot
 ```
 
@@ -107,13 +107,13 @@ service dnsmasq restart
 
 Then make it executable:
 
-```
+```bash
 sudo chmod +x /usr/local/sbin/usb-gadget.sh
 ```
 
 Now make the file `/lib/systemd/system/usbgadget.service` and put this in it:
 
-```
+```bash
 [Unit]
 Description=My USB gadget
 After=network-online.target
@@ -131,13 +131,13 @@ WantedBy=sysinit.target
 
 Then enable itL
 
-```
+```bash
 sudo systemctl enable usbgadget.service
 ```
 
 Now we make a bridge to connect over. Note the IP address, we will use it later to connect through the usb-c cable.
 
-```
+```bash
 sudo nmcli con add type bridge ifname br0
 sudo nmcli con add type bridge-slave ifname usb0 master br0
 sudo nmcli con add type bridge-slave ifname usb1 master br0
@@ -146,13 +146,13 @@ sudo nmcli connection modify bridge-br0 ipv4.method manual ipv4.addresses 10.55.
 
 Then install dns masq:
 
-```
+```bash
 sudo apt-get install dnsmasq
 ```
 
 Now create the file `/etc/dnsmasq.d/br0` and put this in it:
 
-```
+```bash
 dhcp-authoritative
 dhcp-rapid-commit
 no-ping
@@ -164,7 +164,7 @@ leasefile-ro
 
 This should handle putting the Pi in gadget mode. Lets turn on VNC before we move forward.
 
-```
+```bash
 sudo raspi-config
 ```
 
@@ -176,7 +176,7 @@ reboot
 
 Now, Everything should be ready and up and running. Before I go ahead and use the VNC with the IPad, I will build the mini-kvm software from source. I only did this because at the time of writing, their arm linux download did not work. As long as you get the software working on your Pi this tutorial should work, since i do not edit the software at all. In fact, I just followed their walkthrough on the github, which I will copy here:
 
-```
+```bash
 # Build environment preparation   
 sudo apt-get update -y
 sudo apt-get install -y \
@@ -190,7 +190,7 @@ sudo apt-get install -y \
     qt6-tools-dev
 ```
 
-```
+```bash
 # Setup the dialout permission for Serial port
 sudo usermod -a -G dialout $USER
 # On some distros (e.g. Arch Linux) this might be called uucp
@@ -202,7 +202,7 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-```
+```bash
 # Get the source
 git clone https://github.com/TechxArtisanStudio/Openterface_QT.git
 cd Openterface_QT
@@ -217,7 +217,7 @@ qmake6 ..
 make -j$(nproc)
 ```
 
-```
+```bash
 # Run
 ./openterfaceQT
 ```
