@@ -25,6 +25,8 @@ Now boot up your pi, find its ip lease in your router, and connect to it via ssh
 
 # Initialize the Pi and put it in gadget mode
 
+Full credit to Ben for making this [amazing guide](https://www.hardill.me.uk/wordpress/2023/12/23/pi5-usb-c-gadget/) on putting the new raspberry Pi into gadget mode. As far as I am aware, he was the first to make a guide for this and was able to publis it within months of the Pi being released. What I put in my guide is heavily based on what he put, but I put down everything that I specifically did to make mine work. Check out his guide for a better explanation what everything does.
+
 Update everything as is normal with a fresh install.
 
 ```bash
