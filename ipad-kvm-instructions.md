@@ -238,12 +238,15 @@ qmake6 ..
 make -j$(nproc)
 ```
 
+
+Now, everything should be ready to go, and you should be able to open up the software.
+
 ```bash
 # Run
 ./openterfaceQT
 ```
 
-Now, everything should be ready to go, and you should be able to open up the software. Now lets connect using the IPad.
+Now lets connect using the IPad.
 
 # Connect to the Pi using the IPad
 
