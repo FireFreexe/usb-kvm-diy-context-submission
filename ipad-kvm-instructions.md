@@ -1,9 +1,17 @@
-must have
-- micro sd card
-- microsd card reader (mine is a usb one that looks like a flash drive, but any will do)
-- rasberry pi 5
+So here I will show exactly what I did to get my standalone kvm using an IPad, a raspberry Pi, and a Openterface mini-kvm.
 
-Of course the steps will be slightly different if you are using a different pi model, but the earlier models have much more documentation on setting them up to use gadget mode.
+
+Things that you must have for this walkthrough:
+- Micro sd card
+- Microsd card reader (mine is a usb one that looks like a flash drive, but any will do)
+- Rasberry Pi 5
+- IPad with usb-c charging
+- 1 usb-c cable
+- Openterface mini-kvm and its required cables
+
+Of course the steps will be slightly different if you are using a different Pi model, but the earlier models have much more documentation on setting them up to use gadget mode.
+
+# Get your Pi running
 
 Download the official rasberry pi imager and run it.
 
@@ -14,6 +22,8 @@ For ease of settup, edit the OS configuration to whatever suits you. I changed t
 Then just confirm your way through the menue and have it write to the microSD card.
 
 Now boot up your pi, find its ip lease in your router, and connect to it via ssh.
+
+# Initialize the Pi and put it in gadget mode
 
 Update everything as is normal with a fresh install.
 
@@ -132,13 +142,17 @@ ExecStart=/usr/local/sbin/usb-gadget.sh
 WantedBy=sysinit.target
 ```
 
-Then enable itL
+Then enable it.
 
 ```bash
 sudo systemctl enable usbgadget.service
 ```
 
-Now we make a bridge to connect over. Note the IP address, we will use it later to connect through the usb-c cable.
+The Pi should now be in gadget mode, so lets make it so we can connect to it easily.
+
+# Configure the Pi's usb-c port to act as a network port, and enable VNC
+
+Let's make a bridge to connect over. Note the IP address, we will use it later to connect through the usb-c cable.
 
 ```bash
 sudo nmcli con add type bridge ifname br0
@@ -177,7 +191,11 @@ enable
 finish
 reboot
 
-Now, Everything should be ready and up and running. Before I go ahead and use the VNC with the IPad, I will build the mini-kvm software from source. I only did this because at the time of writing, their arm linux download did not work. As long as you get the software working on your Pi this tutorial should work, since i do not edit the software at all. In fact, I just followed their walkthrough on the github, which I will copy here:
+Now, Everything should be ready and up and running. Before I go ahead and use the VNC with the IPad, lets install the mini-kvm software.
+
+# Install OpenterfaceQT
+
+I will be building the mini-kvm software from source. I only did this because at the time of writing, their arm linux download did not work. As long as you get the software working on your Pi this tutorial should work, since i do not edit the software at all. In fact, I just followed their walkthrough on the github, which I will copy here:
 
 ```bash
 # Build environment preparation   
@@ -225,12 +243,16 @@ make -j$(nproc)
 ./openterfaceQT
 ```
 
-Now, everything should be up and running, and you should be able to open up the software. Now lets connect using the IPad.
+Now, everything should be ready to go, and you should be able to open up the software. Now lets connect using the IPad.
 
-Plug in the usb-c cable into your ipad and into your Pi's power input. The pi should turn on and start running everything it needs to start up. Keep in mind that the IPad supplies little power, so the startup will take a bit and might occasionally crash due to low voltage. If the Pi's light turns red, that means it crashed, so just unplug it and replug it in, and it should eventually work.
+# Connect to the Pi using the IPad
+
+Plug the usb-c cable into your ipad and into your Pi's power input. The pi should turn on and start running everything it needs to start up. Keep in mind that the IPad supplies little power, so the startup will take a bit and might occasionally crash due to low voltage. If the Pi's light turns red, that means it crashed, so just unplug it and replug it in, and it should eventually work.
 
 Now, install a VNC app onto the IPad, I use RealVNC. You will try to connect to 10.55.0.1, whcih is the IP I mentioned earlier, so if you changed it then, change it now. If the connection times out, and the Pi's light is still green, the Pi is probably still setting up, so give it a few more minutes. Eventually it should let you connect, and you are done!
 
 This connection is entirely internal through the usb-c cable, so no outside internet is required, and since you are using the battery from the IPad, you will not need a new source of power as long as the IPad stays charged. The IPad is now the power source, keyboard, mouse, and monitor for the Pi, and since the Pi has mini-kvm on it, can be the keyboard mouse and monitor for any target computer you can plug in to.
 
 From here, just follow normal mini-kvm documentation to get finished. Plug in the Pi to the mini-kvm with usb-a cables, and plug in the hdmi and usb cables from the mini-kvm to the target conmputer, and you can now control the target directly from the IPad.
+
+If you are interested in also learning how to make this solution remote, check out my [remote kvm instructions](https://github.com/FireFreexe/usb-kvm-diy-context-submission/blob/main/remote-kvm-instructions.md).
