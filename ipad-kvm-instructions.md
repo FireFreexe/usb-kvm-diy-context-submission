@@ -36,10 +36,13 @@ sudo reboot
 
 Now to edit some files:
 
-Add `modules-load=dwc2` to the end of `/boot/firmware/cmdline.txt` file
-Add `libcomposite` to the end of the `/etc/modules` file
-Add `dtoverlay=dwc2` to `/boot/firmware/config.txt`
-Comment out `otg_mode=1` from `/boot/firmware/config.txt`
+Add `modules-load=dwc2` to the end of `/boot/firmware/cmdline.txt` file.
+
+Add `libcomposite` to the end of the `/etc/modules` file.
+
+Add `dtoverlay=dwc2` to `/boot/firmware/config.txt`.
+
+Comment out `otg_mode=1` from `/boot/firmware/config.txt`.
 
 Now make the file `/usr/local/sbin/usb-gadget.sh` and put this in it:
 
