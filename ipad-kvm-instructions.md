@@ -222,23 +222,6 @@ make -j$(nproc)
 ./openterfaceQT
 ```
 
-```
-# If you can't control the mouse and keyboard (with high probability that did not correctly recognize the serial port)
-
-# solution
-sudo apt remove brltty
-# after run this plug out the openterface and pulg in again
-ls /dev/ttyUSB*
-# if you can list the usb the serial port correctly recognized
-# Then we need give the permissions to user for control serial port you can do this:
-sudo ./openterfaceQT
-# or (dialout/uucp)
-sudo usermod -a -G dialout <your_username>
-sudo reboot
-# back to the build floder
-./openterfaceQT
-```
-
 Now, everything should be up and running, and you should be able to open up the software. Now lets connect using the IPad.
 
 Plug in the usb-c cable into your ipad and into your Pi's power input. The pi should turn on and start running everything it needs to start up. Keep in mind that the IPad supplies little power, so the startup will take a bit and might occasionally crash due to low voltage. If the Pi's light turns red, that means it crashed, so just unplug it and replug it in, and it should eventually work.
