@@ -1,47 +1,47 @@
 must have
 - micro sd card
-- microsd card reader (mine is a usb one that looks like a flash drive)
+- microsd card reader (mine is a usb one that looks like a flash drive, but any will do)
 - rasberry pi 5
 
-of course the steps will be slightly different if you are using a different pi model, but the earlier models have much more documentation on setting them up to use gadget mode
+Of course the steps will be slightly different if you are using a different pi model, but the earlier models have much more documentation on setting them up to use gadget mode.
 
-Download the official rasberry pi imager and run it
+Download the official rasberry pi imager and run it.
 
-choose your device (Pi 5), OS (PI OS 64bit), and storage which will be your sd reader
+Choose your device (Pi 5), OS (PI OS 64bit), and storage (which will be your sd reader).
 
-for ease of settup, edit the OS configuration to whatever suits your. I changed the hostname to something shorter, set up my username and password, wifi, timezone, and SSH.
+For ease of settup, edit the OS configuration to whatever suits you. I changed the hostname to something shorter, set up my username and password, wifi, timezone, and SSH. Internet will only be needed for initial setup and installing the mini-kvm software.
 
-then just confirm your way through the menue and have it write to the microSD card
+Then just confirm your way through the menue and have it write to the microSD card.
 
-now boot up your pi, find its ip lease in your router, and connect to it via ssh
+Now boot up your pi, find its ip lease in your router, and connect to it via ssh.
 
-update everything as is normal with a fresh install
+Update everything as is normal with a fresh install.
 
 ```
 sudo apt update
 sudo apt upgrade -y
 ```
 
-then update the firmware to allow the gadget support
+Then update the firmware to allow the gadget support.
 
 ```
 sudo rpi-update
 ```
 
-after is updates, reboot
+After is updates, reboot.
 
 ```
 sudo reboot
 ```
 
-now to edit some files
+Now to edit some files:
 
-Add modules-load=dwc2 to the end of /boot/firmware/cmdline.txt file
-Add libcomposite to the end of the /etc/modules file
-Add dtoverlay=dwc2 to /boot/firmware/config.txt
-comment out otg_mode=1 from /boot/firmware/config.txt
+Add `modules-load=dwc2` to the end of `/boot/firmware/cmdline.txt` file
+Add `libcomposite` to the end of the `/etc/modules` file
+Add `dtoverlay=dwc2` to `/boot/firmware/config.txt`
+Comment out `otg_mode=1` from `/boot/firmware/config.txt`
 
-now make the file /usr/local/sbin/usb-gadget.sh and put this in it:
+Now make the file `/usr/local/sbin/usb-gadget.sh` and put this in it:
 
 ```
 #!/bin/bash
@@ -105,13 +105,13 @@ sleep 5
 service dnsmasq restart
 ```
 
-then make it executable:
+Then make it executable:
 
 ```
 sudo chmod +x /usr/local/sbin/usb-gadget.sh
 ```
 
-now make the file /lib/systemd/system/usbgadget.service and put this in it:
+Now make the file `/lib/systemd/system/usbgadget.service` and put this in it:
 
 ```
 [Unit]
@@ -129,13 +129,13 @@ ExecStart=/usr/local/sbin/usb-gadget.sh
 WantedBy=sysinit.target
 ```
 
-then enable it
+Then enable itL
 
 ```
 sudo systemctl enable usbgadget.service
 ```
 
-now we make a bridge to connect over. note the IP address, we will use it later to connect through the usb-c cable
+Now we make a bridge to connect over. Note the IP address, we will use it later to connect through the usb-c cable.
 
 ```
 sudo nmcli con add type bridge ifname br0
@@ -144,9 +144,13 @@ sudo nmcli con add type bridge-slave ifname usb1 master br0
 sudo nmcli connection modify bridge-br0 ipv4.method manual ipv4.addresses 10.55.0.1/24
 ```
 
-install dns masq
+Then install dns masq:
 
-create the file /etc/dnsmasq.d/br0 and put this in it:
+```
+sudo apt-get install dnsmasq
+```
+
+Now create the file `/etc/dnsmasq.d/br0` and put this in it:
 
 ```
 dhcp-authoritative
@@ -158,34 +162,89 @@ dhcp-option=3
 leasefile-ro
 ```
 
-this should handle the putting it in gadget mode. lets turn on vnc before we move forward.
+This should handle putting the Pi in gadget mode. Lets turn on VNC before we move forward.
 
 ```
 sudo raspi-config
 ```
 
-interface options:
+Click through the interface options as followed:
 VNC
 enable
 finish
 reboot
 
-everything should be ready and up and running. before i go ahead and use the vnc with the ipad, i will install the mini kvm software though command lines
+Now, Everything should be ready and up and running. Before I go ahead and use the VNC with the IPad, I will build the mini-kvm software from source. I only did this because at the time of writing, their arm linux download did not work. As long as you get the software working on your Pi this tutorial should work, since i do not edit the software at all. In fact, I just followed their walkthrough on the github, which I will copy here:
 
-i just followed their walkthrough on the github
+```
+# Build environment preparation   
+sudo apt-get update -y
+sudo apt-get install -y \
+    build-essential \
+    qmake6 \
+    qt6-base-dev \
+    qt6-multimedia-dev \
+    qt6-serialport-dev \
+    qt6-svg-dev \
+    libusb-1.0-0-dev \
+    qt6-tools-dev
+```
 
-sudo wget https://github.com/TechxArtisanStudio/Openterface_QT/releases/download/v0.2.0/openterfaceQT.linux.arm64.deb
-
-sudo apt install -y libqt6core6 libqt6dbus6 libqt6gui6 libqt6network6 libqt6multimedia6 libqt6multimediawidgets6 libqt6serialport6 libqt6svg6 libusb-1.0-0-dev
-
+```
+# Setup the dialout permission for Serial port
 sudo usermod -a -G dialout $USER
+# On some distros (e.g. Arch Linux) this might be called uucp
+sudo usermod -a -G uucp $USER
 
-echo 'KERNEL== "hidraw*", SUBSYSTEM=="hidraw", MODE="0666"' | sudo tee /etc/udev/rules.d/51-openterface.rules
-
+# Setup the hidraw permission
+echo 'KERNEL== "hidraw*", SUBSYSTEM=="hidraw", MODE="0666"' | sudo tee /etc/udev/rules.d/51-openterface.rules 
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+```
 
-sudo dpkg -i openterfaceQT.deb
+```
+# Get the source
+git clone https://github.com/TechxArtisanStudio/Openterface_QT.git
+cd Openterface_QT
 
-openterfaceQT
+# Generate language files (The lrelease path may vary depending on your system)
+/usr/lib/qt6/lrelease openterfaceQT.pro
 
+# Build the project
+mkdir build
+cd build
+qmake6 ..
+make -j$(nproc)
+```
+
+```
+# Run
+./openterfaceQT
+```
+
+```
+# If you can't control the mouse and keyboard (with high probability that did not correctly recognize the serial port)
+
+# solution
+sudo apt remove brltty
+# after run this plug out the openterface and pulg in again
+ls /dev/ttyUSB*
+# if you can list the usb the serial port correctly recognized
+# Then we need give the permissions to user for control serial port you can do this:
+sudo ./openterfaceQT
+# or (dialout/uucp)
+sudo usermod -a -G dialout <your_username>
+sudo reboot
+# back to the build floder
+./openterfaceQT
+```
+
+Now, everything should be up and running, and you should be able to open up the software. Now lets connect using the IPad.
+
+Plug in the usb-c cable into your ipad and into your Pi's power input. The pi should turn on and start running everything it needs to start up. Keep in mind that the IPad supplies little power, so the startup will take a bit and might occasionally crash due to low voltage. If the Pi's light turns red, that means it crashed, so just unplug it and replug it in, and it should eventually work.
+
+Now, install a VNC app onto the IPad, I use RealVNC. You will try to connect to 10.55.0.1, whcih is the IP I mentioned earlier, so if you changed it then, change it now. If the connection times out, and the Pi's light is still green, the Pi is probably still setting up, so give it a few more minutes. Eventually it should let you connect, and you are done!
+
+This connection is entirely internal through the usb-c cable, so no outside internet is required, and since you are using the battery from the IPad, you will not need a new source of power as long as the IPad stays charged. The IPad is now the power source, keyboard, mouse, and monitor for the Pi, and since the Pi has mini-kvm on it, can be the keyboard mouse and monitor for any target computer you can plug in to.
+
+From here, just follow normal mini-kvm documentation to get finished. Plug in the Pi to the mini-kvm with usb-a cables, and plug in the hdmi and usb cables from the mini-kvm to the target conmputer, and you can now control the target directly from the IPad.
